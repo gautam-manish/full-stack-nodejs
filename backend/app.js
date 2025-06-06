@@ -2,20 +2,37 @@
 
 // These two line of code is a compulsary initial code while doing project in excpress
 const express = require('express'); // express require gareko
+const { books } = require('./database/connection');
 const app = express(); // express lai trigger gareko
 
 require("./database/connection")
+app.use(express.json())
 
 
-app.get("/books",(req,res)=>{  // read opertaion
+
+app.get("/books",async (req,res)=>{  // read opertaion
     // logic to fetch from database
+    const datas = await books.findAll(); // this line is simlilar to select * from books
     res.json({
         message : "books fetch successfully",
+        datas
     })
 })
 
-app.post("/books",(req,res)=>{ // create opertaion
+app.post("/books",async (req,res)=>{ // create opertaion
     // logic to add books in database goes here ....
+    console.log(req.body);
+    
+    const{bookName,bookPrice, bookAuthor, bookGenre } = req.body
+    
+    await books.create({
+        bookName,
+        bookPrice,
+        bookAuthor, 
+        bookGenre 
+    })
+    
+    
     res.json({
         message : "Books added successfully",
     })
